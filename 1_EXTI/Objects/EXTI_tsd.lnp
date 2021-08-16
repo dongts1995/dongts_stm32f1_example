@@ -1,0 +1,14 @@
+--cpu Cortex-M3
+".\objects\stm32f10x_it.o"
+".\objects\system_stm32f10x.o"
+".\objects\main.o"
+".\objects\startup_stm32f10x_md.o"
+".\objects\stm32f10x_gpio.o"
+".\objects\stm32f10x_rcc.o"
+".\objects\stm32f10x_tim.o"
+".\objects\stm32f10x_exti.o"
+".\objects\misc.o"
+--strict --scatter ".\Objects\EXTI_tsd.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\EXTI_tsd.map" -o .\Objects\EXTI_tsd.axf
