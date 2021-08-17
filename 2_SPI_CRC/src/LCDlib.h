@@ -9,9 +9,10 @@
 /* LCD's pins Definition*/
 #define LCD_A0_1 GPIO_SetBits(GPIOB, GPIO_Pin_5);
 #define LCD_A0_0 GPIO_ResetBits(GPIOB, GPIO_Pin_5);
-#define LCD_A0          P5.1	//B5
-#define LCD_CS          P4.1	//B6
-#define LCD_RST         P5.0 	//B7
+#define LCD_CS_1 GPIO_SetBits(GPIOB, GPIO_Pin_6);
+#define LCD_CS_0 GPIO_ResetBits(GPIOB, GPIO_Pin_6);
+#define LCD_RST_1	GPIO_SetBits(GPIOB, GPIO_Pin_7);
+#define LCD_RST_0	GPIO_ResetBits(GPIOB, GPIO_Pin_7);
 
 
 #define LCD_WIDTH			128

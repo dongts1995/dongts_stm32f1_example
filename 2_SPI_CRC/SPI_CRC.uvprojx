@@ -423,6 +423,16 @@
               <FileType>5</FileType>
               <FilePath>.\src\spi.h</FilePath>
             </File>
+            <File>
+              <FileName>LCDlib.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\LCDlib.c</FilePath>
+            </File>
+            <File>
+              <FileName>LCDlib.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\LCDlib.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

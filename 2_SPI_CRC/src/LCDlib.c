@@ -1,4 +1,5 @@
 #include "LCDlib.h"
+#include "spi.h"
 
 #include "stm32f10x.h"
 
@@ -15,9 +16,9 @@ void LCD_write(uint8_t isData, uint8_t byte)
 uint8_t LCD_ST = 2;
 void LCD_init(void)
 {
-  LCD_RST = LOW;
+  LCD_RST_0
   delay_ms(5);   // equal to 1ms
-  LCD_RST = HIGH;
+  LCD_RST_1
   delay_ms(5);   // equal to 1ms
   LCD_write(0, LCD_RESET);
   delay_ms(5);   // equal to 1ms

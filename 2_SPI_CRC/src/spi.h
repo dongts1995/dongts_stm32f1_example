@@ -6,6 +6,7 @@
 void spi_config(void);
 void spi_bidirectional_CRC(void);
 void spi_simplex(void);
+void Sync_Send_Byte(uint8_t byte);
 
 
 

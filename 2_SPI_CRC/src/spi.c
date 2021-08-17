@@ -165,5 +165,9 @@ void spi_simplex(void)
 		while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
 		/* Read SPI2 last received data */
 		SPI2_Buffer_Rx[RxIdx] = SPI_I2S_ReceiveData(SPI2);
-
+	}
+	
+	void Sync_Send_Byte(uint8_t byte)
+	{
+				SPI_I2S_SendData(SPI1, byte);
 	}
