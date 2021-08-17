@@ -28,6 +28,7 @@ void EXTI0_Config(void);
   */
 int main(void)
 {
+	SysTick_Config(SystemCoreClock/1000);			// cau hinh systick ngat moi 1ms
   
   /* Configure PA.01 in interrupt mode */
 	/* debug++ when call interrupt */
