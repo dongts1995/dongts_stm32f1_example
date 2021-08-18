@@ -30,3 +30,6 @@
 .\objects\lcdlib.o: ..\..\STM32F10x_StdPeriph_Lib_V3.5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\lcdlib.o: ..\..\STM32F10x_StdPeriph_Lib_V3.5.0\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
 .\objects\lcdlib.o: src\spi.h
+.\objects\lcdlib.o: src\main.h
+.\objects\lcdlib.o: src\Fonts.h
+.\objects\lcdlib.o: src\icons.h

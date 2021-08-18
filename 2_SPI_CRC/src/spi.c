@@ -171,3 +171,8 @@ void spi_simplex(void)
 	{
 				SPI_I2S_SendData(SPI1, byte);
 	}
+	
+	void Sync_Send_Array (uint8_t text_style, const uint8_t * ptrString, uint8_t len)
+	{
+		// chua viet
+	}

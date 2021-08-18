@@ -433,6 +433,26 @@
               <FileType>5</FileType>
               <FilePath>.\src\LCDlib.h</FilePath>
             </File>
+            <File>
+              <FileName>Fonts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\Fonts.c</FilePath>
+            </File>
+            <File>
+              <FileName>Fonts.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\Fonts.h</FilePath>
+            </File>
+            <File>
+              <FileName>icons.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\icons.c</FilePath>
+            </File>
+            <File>
+              <FileName>icons.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\icons.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

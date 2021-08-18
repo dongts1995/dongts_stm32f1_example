@@ -41,7 +41,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-/*-----------------------------------SPI_variables-------------------------------*/
+// SPI_variables...
 SPI_InitTypeDef  SPI_InitStructure;
 uint16_t SPI1_Buffer_Tx[BufferSize] = {0x0102, 0x0304, 0x0506, 0x0708, 0x090A, 0x0B0C,
                                   0x0D0E, 0x0F10, 0x1112, 0x1314, 0x1516, 0x1718,
@@ -58,12 +58,15 @@ uint16_t SPI2_Buffer_Tx[BufferSize] = {0x5152, 0x5354, 0x5556, 0x5758, 0x595A, 0
 uint16_t SPI1_Buffer_Rx[BufferSize], SPI2_Buffer_Rx[BufferSize];
 uint32_t TxIdx = 0, RxIdx = 0;
 __IO uint16_t CRC1Value = 0, CRC2Value = 0;
-
+// Delay_variables...																
+static __IO uint32_t TimingDelay;
 
 
 /* Private functions ---------------------------------------------------------*/
 void RCC_Configuration(void);
 void GPIO_Configuration(void);
+// Delay functions...
+
 
 
 /**
@@ -78,7 +81,15 @@ int main(void)
 
   /* GPIO configuration ------------------------------------------------------*/
   GPIO_Configuration();
+	
+	/* SysTick Config */
+  if (SysTick_Config(SystemCoreClock / 1000000))
+  { 
+    /* Capture error */ 
+    while (1);
+  }
 
+	/* SPI Config*/
   spi_config();
 
   /* Transfer procedure */
@@ -143,6 +154,30 @@ void GPIO_Configuration(void)
 	/*--------------------------------end_SPI_config-------------------------------*/
 }
 
+/**
+  * @brief  Inserts a delay time.
+  * @param  nTime: specifies the delay time length, in us.
+  * @retval None
+  */
+void Delay_us(__IO uint32_t nTime)
+{ 
+  TimingDelay = nTime;
+
+  while(TimingDelay != 0);
+}
+
+/**
+  * @brief  Decrements the TimingDelay variable.
+  * @param  None
+  * @retval None
+  */
+void TimingDelay_Decrement(void)
+{
+  if (TimingDelay != 0x00)
+  { 
+    TimingDelay--;
+  }
+}
 
 /**
   * @brief  Compares two buffers.

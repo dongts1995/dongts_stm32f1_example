@@ -1,5 +1,8 @@
 #include "LCDlib.h"
 #include "spi.h"
+#include "main.h"
+#include "Fonts.h"
+#include "icons.h"
 
 #include "stm32f10x.h"
 
@@ -17,20 +20,20 @@ uint8_t LCD_ST = 2;
 void LCD_init(void)
 {
   LCD_RST_0
-  delay_ms(5);   // equal to 1ms
+  Delay_us(1000);   // equal to 1ms
   LCD_RST_1
-  delay_ms(5);   // equal to 1ms
+  Delay_us(1000);   // equal to 1ms
   LCD_write(0, LCD_RESET);
-  delay_ms(5);   // equal to 1ms
+  Delay_us(1000);   // equal to 1ms
   LCD_write(0, SET_BIAS);
   LCD_write(0, POWER_CONTROL);
-  delay_ms(250);   // equal to 50ms 
+  Delay_us(50000);   // equal to 50ms
   LCD_write(0, REGULATION_RESISTOR_RATIO);
   LCD_write(0, DISPLAY_ON);
   LCD_write(0, ADC_REVERSE);
   LCD_write(0, VERTICAL_DIRECTION_REVERSE);
-  LCD_contrast_set(screen_Contrast);
-  Set_LCD_BackLight_Level(screen_BackLight);
+  LCD_contrast_set(_CONTRAST_LEVEL_4);
+  //Set_LCD_BackLight_Level(screen_BackLight);
   LCD_clear();
   LCD_ST = 1;
 
@@ -41,8 +44,8 @@ void LCD_Power_saver() {  // tanhhc:  chua test func nay
     LCD_write(0, DISPLAY_OFF);
     LCD_write(0, DISPLAY_ALL_POINT_ON);
 
-    LCD_CS = 0;
-    LCD_A0 = 1;
+    LCD_CS_0
+    LCD_A0_1
 //    LCD_SCL = 1;          tanhhc:  Luu y cho nay chuyen thanh disable module SPI, vi qua Renesas minh dung SPI de giao tiep
 //    LCD_SDI = 1;
 
@@ -57,8 +60,8 @@ void LCD_Normal_Mode() {        // tanhhc: chua test func nay, tai sao lai khong
     LCD_write(0, POWER_CONTROL);
     LCD_write(0, ADC_REVERSE);
     LCD_write(0, VERTICAL_DIRECTION_REVERSE);
-    LCD_contrast_set(screen_Contrast);
-    Set_LCD_BackLight_Level(screen_BackLight);
+    LCD_contrast_set(_CONTRAST_LEVEL_4);
+    //Set_LCD_BackLight_Level(screen_BackLight);
     LCD_clear();
     LCD_ST = 1;
   }
@@ -113,7 +116,7 @@ void LCD_putc(uint8_t c)
     if ((c >= 0x20) && (c <= 0x7F))
     {
         c = c - 32U;
-        LCD_A0 = 1;        
+        LCD_A0_1        
         Sync_Send_Array(TEXT_NORMAL, font6x8[c], 6);            // truyen them doi so de xac dinh typography muon hien thi
     }
 }
@@ -123,7 +126,7 @@ void LCD_putc_with_style (uint8_t text_style, uint8_t c)  //tanhhc:    ham nay m
     if ((c >= 0x20) && (c <= 0x7F))
     {
       c = c - 32U;
-      LCD_A0 = 1;        
+      LCD_A0_1       
       Sync_Send_Array(text_style, font6x8[c], 6);            // truyen them doi so de xac dinh typography muon hien thi
     }
 }  
@@ -197,14 +200,14 @@ void LCD_puts_lower_reverse(uint8_t * str)
 void LCD_putNumber(uint32_t num) 
 {
   char str[10] = "";
-  sprintf_vft(str, num);
+  sprintf_vft_tsd(str, num);
   LCD_puts(str);
 }
 
 void LCD_putNumber_reverse(uint32_t num) 
 {
   char str[10] = "";
-  sprintf_vft(str, num);
+  sprintf_vft_tsd(str, num);
   LCD_puts_reverse(str);
 }
 
@@ -213,7 +216,7 @@ void LCD_scroll()
   uint8_t i;
   for (i = 0; i < 64; i++) {
     LCD_write(0, 0x40 | (i));
-    delay_ms(100);
+		Delay_us(20000);   // equal to 20ms
   }
   LCD_write(0, 0x40);
 }
@@ -234,10 +237,10 @@ void LCD_putc12x16(uint8_t x, uint8_t y, uint8_t c) {
         return;
     if ((c >= 0x20) && (c <= 0x7F)) {
         c = c - 32U;
-        LCD_A0 = 1;
+        LCD_A0_1
         Sync_Send_Array(TEXT_NORMAL, font12x16[2 * c], 12);
         LCD_gotoxy(x, y + 1); // go to next page
-        LCD_A0 = 1;
+        LCD_A0_1
         Sync_Send_Array(TEXT_NORMAL, font12x16[2 * c + 1], 12);
     }
 }
@@ -252,10 +255,10 @@ void LCD_putc12x16_reverse(uint8_t x, uint8_t y, uint8_t c)
   if ((c >= 0x20) && (c <= 0x7F)) 
   {
     c = c - 32U;
-    LCD_A0 = 1;
+    LCD_A0_1
     Sync_Send_Array(TEXT_REVERSE_16x12, font12x16[2*c], 12);
     LCD_gotoxy(x, y + 1); // go to next page
-    LCD_A0 = 1;
+    LCD_A0_1
     Sync_Send_Array(TEXT_REVERSE_16x12, font12x16[2*c + 1], 12);
   }
 }
@@ -280,14 +283,14 @@ void LCD_puts12x16_reverse(uint8_t x, uint8_t y, uint8_t * str)
 void LCD_put12x16Number(uint8_t x, uint8_t y, uint32_t num) 
 {
   char str[10] = "";
-  sprintf_vft(str, num);
+  sprintf_vft_tsd(str, num);
   LCD_puts12x16(x, y, str);
 }
 
 void LCD_put12x16Number_reverse(uint8_t x, uint8_t y, uint32_t num) 
 {
   char str[10] = "";
-  sprintf_vft(str, num);
+  sprintf_vft_tsd(str, num);
   LCD_puts12x16_reverse(x, y, str);
 }
 
@@ -348,10 +351,47 @@ void LCD_putIcon(uint8_t x, uint8_t y, uint8_t icon)    // tanhhc:   Sau nay, Ha
         temp = icons32x32[icon -
           (NUMBER_OF_24X16_ICON + NUMBER_OF_8X8_ICON + NUMBER_OF_16X8_ICON + NUMBER_OF_20X8_ICON)][i * 4 + j];
         //temp = ((temp<<4)&0xF0)|((temp>>4)&0x0F);
-        temp = swap_byte(temp);
+        temp = swap_byte_tsd(temp);
         LCD_write(1, temp);
 
       }
     return;
   }
 }
+
+// dongts1: add
+void sprintf_vft_tsd(char* str, uint32_t num)
+{
+    char c, lenght=0, i;
+	do
+    {
+		c = num%10;
+		*(str+lenght) = c + 48;
+		lenght++;
+		num/= 10;		
+	}
+    while(num);
+	for(i=0; i<(lenght/2); i++)
+    {
+		c = *(str+i);
+		*(str+i) = *(str+lenght-1-i);
+		*(str+lenght-1-i) = c;	
+	}
+}
+
+/*********************************************************************************
+*Function name: swap_byte(unsigned char byte)
+*Description: 	Swap order of a byte. 
+				Serve for putting 32X32 icon within LCD_putIcon() function and sth else.
+*Input:
+*Return value:
+*Date created:	
+**********************************************************************************/
+uint8_t swap_byte_tsd(uint8_t byte)
+{
+		uint8_t temp=0;
+		temp = ((byte&0x01)<<7)|((byte&0x02)<<5)|((byte&0x04)<<3)|((byte&0x08)<<1)
+				|((byte&0x10)>>1)|((byte&0x20)>>3)|((byte&0x40)>>5)|((byte&0x80)>>7);
+		return temp;
+}
+

@@ -43,6 +43,13 @@
 #define _CONTRAST_LEVEL_4			0x2D
 #define _CONTRAST_LEVEL_5			0x30
 
+//dongts1: add
+#define CONTRAST_LEVEL_1		0
+#define CONTRAST_LEVEL_2		1
+#define CONTRAST_LEVEL_3		2
+#define CONTRAST_LEVEL_4		3
+#define CONTRAST_LEVEL_5		4
+
 /* Select typography want to display on LCD
 */
 #define TEXT_NORMAL                0x00
@@ -167,5 +174,8 @@ void LCD_puts_underLine(uint8_t *str);
 */
 void LCD_reverse(uint8_t toRev);
 
+// dongts1: add
+void sprintf_vft_tsd(char* str, uint32_t num);
+uint8_t swap_byte_tsd(uint8_t byte);
 
 #endif
