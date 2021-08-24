@@ -111,3 +111,24 @@ In order to make the program work, you must do the following :
    
  * <h3><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h3>
  */
+
+
+Chương trình tạo ra 4 xung PWM với 4 tần số khác nhau.
+Dựa trên 4 channel của Timer3 và phát ra 4 chân tương ứng là PA6, PA7, PB0, PB1 (xem trang 178)
+Nguyên tắc:
+- Timer 3 sẽ đếm xung từ 0 - 65535 (16 bit).
+- Xung phát ra GPIO sẽ đảo chiều khi có giá trị bằng với giá trị compare
+- Giá trị compare này được cộng dồn vào 1 giá trị CCRx_Val sau khi nhảy vào ngắt timer3.
+- Với mõi khoảng CCRx_Val cách đều nhau. Ta sẽ có xung đầu ra GPIO có chu kỳ 2/f (do phải đảo chiều 2 lần mới được 1 chu kỳ mà)
+Chương trình code:
+-Trong hàm main()
+	/* 1. System Clocks Configuration */
+	/* 2. NVIC Configuration */
+	/* 3. GPIO Configuration */
+	///// 4. Cau hinh Timer3 voi tan so 12MHz va xung dem len
+	///// 5. cau hinh 4 channel voi CCR_Val khac nhau de tao ra tan so xung khac nhau
+	/* 6. TIM enable counter */
+	/* 7. TIM IT enable */
+-Trong hàm ngắt:
+	/* TIM3_CHx toggling with frequency = xxx Hz */
+

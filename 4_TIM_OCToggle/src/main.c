@@ -63,29 +63,39 @@ int main(void)
        system_stm32f10x.c file
      */     
        
-  /* System Clocks Configuration */
+  /* 1. System Clocks Configuration */
+	/* PCLK1 = HCLK/4 */
+	/* TIM3 clock enable */
+	/* GPIOA, GPIOB, GPIOC, AFIO clock enable */
   RCC_Configuration();
 
-  /* NVIC Configuration */
+  /* 2. NVIC Configuration */
+	/* Enable the TIM3 global Interrupt. CT ngat TIM3_IRQn */
   NVIC_Configuration();
 
-  /* GPIO Configuration */
+  /* 3. GPIO Configuration */ // Xem chan tuong ung o bang Timer 3 remaping
+	/* GPIOA Configuration:TIM3 Channel1, 2, 3 and 4 (A6, A7, B0, B1) as alternate function push-pull */
   GPIO_Configuration();
 
   /* ---------------------------------------------------------------------------
+	//// Cach tinh Prescaler de dua ra tan so Timer3 counter ////////
+	//// Cach tinh cac gia tri CCRx_Val de tinh ra tan so xung mong muon /////////
     TIM3 Configuration: Output Compare Toggle Mode:
-    TIM3CLK = SystemCoreClock / 2,
-    The objective is to get TIM3 counter clock at 12 MHz:
-     - Prescaler = (TIM3CLK / TIM3 counter clock) - 1
+    TIM3CLK = SystemCoreClock / 2, ///// tai vi o tren da cau hinh PCLK1 = HCLK/4 nen TIM3CLK gap doi = HCKL/2
+    The objective is to get TIM3 counter clock at 12 MHz:	///// mong muon la 12MHz
+		- Prescaler = (TIM3CLK / TIM3 counter clock) - 1				///// thi cong thuc tinh prescaler la:....
     CC1 update rate = TIM3 counter clock / CCR1_Val = 366.2 Hz
     CC2 update rate = TIM3 counter clock / CCR2_Val = 732.4 Hz
     CC3 update rate = TIM3 counter clock / CCR3_Val = 1464.8 Hz
     CC4 update rate = TIM3 counter clock / CCR4_Val = 2929.6 Hz
   ----------------------------------------------------------------------------*/
   /* Compute the prescaler value */
+	///// Dua vao cong thuc tren, tinh Prescaler //////
   PrescalerValue = (uint16_t) (SystemCoreClock / 24000000) - 1;
 
-  /* Time base configuration */
+
+	///// 4. Cau hinh Timer3 voi tan so 12MHz va xung dem len
+  /* Time base configuration */ 
   TIM_TimeBaseStructure.TIM_Period = 65535;
   TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
@@ -93,7 +103,8 @@ int main(void)
 
   TIM_TimeBaseInit(TIM3, &TIM_TimeBaseStructure);
 
-  /* Output Compare Toggle Mode configuration: Channel1 */
+	///// 5. cau hinh 4 channel voi CCR_Val khac nhau de tao ra tan so xung khac nhau
+  /* 5.1 Output Compare Toggle Mode configuration: Channel1 */
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Toggle;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = CCR1_Val;
@@ -102,7 +113,7 @@ int main(void)
 
   TIM_OC1PreloadConfig(TIM3, TIM_OCPreload_Disable);
 
-  /* Output Compare Toggle Mode configuration: Channel2 */
+  /* 5.2 Output Compare Toggle Mode configuration: Channel2 */
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = CCR2_Val;
 
@@ -110,7 +121,7 @@ int main(void)
 
   TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Disable);
 
-  /* Output Compare Toggle Mode configuration: Channel3 */
+  /* 5.3 Output Compare Toggle Mode configuration: Channel3 */
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = CCR3_Val;
 
@@ -118,7 +129,7 @@ int main(void)
 
   TIM_OC3PreloadConfig(TIM3, TIM_OCPreload_Disable);
 
-  /* Output Compare Toggle Mode configuration: Channel4 */
+  /* 5.4 Output Compare Toggle Mode configuration: Channel4 */
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = CCR4_Val;
 
@@ -126,10 +137,11 @@ int main(void)
 
   TIM_OC4PreloadConfig(TIM3, TIM_OCPreload_Disable);
 
-  /* TIM enable counter */
+
+  /* 6. TIM enable counter */
   TIM_Cmd(TIM3, ENABLE);
 
-  /* TIM IT enable */
+  /* 7. TIM IT enable */
   TIM_ITConfig(TIM3, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4, ENABLE);
 
   while (1)
@@ -144,12 +156,12 @@ int main(void)
 void RCC_Configuration(void)
 {
   /* PCLK1 = HCLK/4 */
-  RCC_PCLK1Config(RCC_HCLK_Div4);
+  RCC_PCLK1Config(RCC_HCLK_Div4);			// TIM3CKL = ( SYSCLK_FREQ_72MHz / 4 ) * 2 = (72M / 4 ) * 2
 
   /* TIM3 clock enable */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
-  /* GPIOA clock enable */
+  /* GPIOA, GPIOB, GPIOC, AFIO clock enable */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB|
                          RCC_APB2Periph_GPIOC | RCC_APB2Periph_AFIO, ENABLE);
 }
@@ -174,7 +186,7 @@ void GPIO_Configuration(void)
   GPIO_PinRemapConfig(GPIO_FullRemap_TIM3, ENABLE);	
 
 #else
-  /* GPIOA Configuration:TIM3 Channel1, 2, 3 and 4 as alternate function push-pull */
+  /* GPIOA Configuration:TIM3 Channel1, 2, 3 and 4 (A6, A7, B0, B1) as alternate function push-pull */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -195,7 +207,7 @@ void NVIC_Configuration(void)
 {
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  /* Enable the TIM3 global Interrupt */
+  /* Enable the TIM3 global Interrupt. CT ngat TIM3_IRQn */
   NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
